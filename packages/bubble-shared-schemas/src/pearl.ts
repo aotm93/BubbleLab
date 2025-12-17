@@ -5,7 +5,7 @@ import { CredentialType } from './types.js';
 
 // Default model for Pearl AI agent
 export const PEARL_DEFAULT_MODEL: AvailableModel =
-  'openrouter/anthropic/claude-sonnet-4.5';
+  'openai/gpt-5-thinking';
 
 // Reuse the ConversationMessageSchema from milk-tea to avoid duplication
 const ConversationMessageSchema = z.object({

@@ -231,7 +231,7 @@ const AIAgentParamsSchema = z.object({
     .optional()
     .describe('A friendly name for the AI agent'),
   model: ModelConfigSchema.default({
-    model: 'google/gemini-2.5-flash',
+    model: 'openai/gpt-5-mini',
     temperature: 0.7,
     maxTokens: 50000,
     maxRetries: 3,

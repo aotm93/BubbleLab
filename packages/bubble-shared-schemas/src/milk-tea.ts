@@ -55,7 +55,7 @@ export const MilkTeaRequestSchema = z.object({
       'Previous conversation messages for multi-turn interactions (frontend manages state)'
     ),
 
-  model: AvailableModels.default('google/gemini-2.5-pro').describe(
+  model: AvailableModels.default('openai/gemini-2.5-pro-exp-03-25').describe(
     'AI model to use for Milk Tea agent'
   ),
 });
