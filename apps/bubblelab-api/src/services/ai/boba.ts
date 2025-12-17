@@ -48,16 +48,6 @@ export async function runBoba(
       success: false,
       error: `OpenRouter API key is required to run (for apply model), please make sure the environment variable ${CREDENTIAL_ENV_MAP[CredentialType.OPENROUTER_CRED]} is set, please obtain one https://openrouter.ai/settings/keys.`,
     };
-  } else if (!env.GOOGLE_API_KEY) {
-    return {
-      summary: '',
-      inputsSchema: '',
-      toolCalls: [],
-      generatedCode: '',
-      isValid: false,
-      success: false,
-      error: `Google API key is required to run (for main generation model), please make sure the environment variable ${CREDENTIAL_ENV_MAP[CredentialType.GOOGLE_GEMINI_CRED]} is set, please obtain one https://console.cloud.google.com/apis/credentials.`,
-    };
   }
 
   // Create logger for token tracking
@@ -65,11 +55,9 @@ export async function runBoba(
     pricingTable: getPricingTable(),
   });
 
-  // Merge provided credentials with default Google Gemini credential
+  // Merge provided credentials with default credentials
   const mergedCredentials: Partial<Record<CredentialType, string>> = {
-    [CredentialType.GOOGLE_GEMINI_CRED]: process.env.GOOGLE_API_KEY || '',
-    [CredentialType.OPENROUTER_CRED]: process.env.OPENROUTER_API_KEY || '',
-
+    [CredentialType.OPENROUTER_CRED]: process.env.OPENROUTER_CRED || '',
     ...credentials,
   };
   const bubbleFactory = await getBubbleFactory();

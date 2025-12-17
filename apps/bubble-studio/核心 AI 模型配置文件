@@ -44,3 +44,78 @@ Google Gemini：google/gemini-2.5-pro、google/gemini-2.5-flash、google/gemini-
 Anthropic：anthropic/claude-sonnet-4-5、anthropic/claude-haiku-4-5
 OpenRouter：多种模型，包括来自不同提供商的模型
 请根据您已配置的 API 密钥选择相应提供商的模型进行修改。修改后需要重新构建项目以应用更改。
+
+
+
+----------------------
+1. 修改 /workspaces/BubbleLab/apps/bubblelab-api/src/services/ai/boba.ts
+问题：该文件强制要求 Google API Key 才能运行。
+
+修改内容：
+
+
+typescript
+Apply
+// 移除或修改强制检查 GOOGLE_API_KEY 的逻辑
+// 原代码（第51-61行）：
+// } else if (!env.GOOGLE_API_KEY) {
+//   return {
+//     summary: '',
+//     inputsSchema: '',
+//     toolCalls: [],
+//     generatedCode: '',
+//     isValid: false,
+//     success: false,
+//     error: `Google API key is required to run (for main generation model), please make sure the environment variable ${CREDENTIAL_ENV_MAP[CredentialType.GOOGLE_GEMINI_CRED]} is set, please obtain one https://console.cloud.google.com/apis/credentials.`,
+//   };
+// }
+
+// 修改合并凭据的逻辑（第70-72行）：
+const mergedCredentials: Partial<Record<CredentialType, string>> = {
+  [CredentialType.OPENROUTER_CRED]: process.env.OPENROUTER_API_KEY || '',
+  // 移除默认添加的 Google Gemini 凭据
+  ...credentials,
+};
+2. 修改 /workspaces/BubbleLab/apps/bubblelab-api/src/services/ai/bubbleflow-generator.workflow.ts
+问题：该文件硬编码使用了 Google Gemini 模型。
+
+修改内容：
+
+修改摘要代理的模型（第152行）：
+
+typescript
+Apply
+model: {
+  // 从 Google Gemini 改为 Anthropic 模型
+  model: 'anthropic/claude-haiku-4-5',
+  jsonMode: true,
+  // 可以保留或修改备份模型
+  backupModel: {
+    model: 'openai/gpt-5-mini',
+  },
+},
+修改主要生成代理的模型（第493行）：
+
+typescript
+Apply
+model: {
+  // 从 Google Gemini 改为更强大的 Anthropic 模型
+  model: 'anthropic/claude-sonnet-4-5',
+  temperature: 0.3,
+  // 可以保留或修改备份模型
+  backupModel: {
+    model: 'openai/gpt-5',
+    temperature: 0.3,
+  },
+},
+3. 修改其他使用 Google Gemini 模型的地方（可选）
+您可能还需要检查并修改其他使用 Google Gemini 模型的文件，如：
+
+/workspaces/BubbleLab/packages/bubble-core/src/bubbles/service-bubble/ai-agent.ts
+/workspaces/BubbleLab/packages/bubble-core/src/bubbles/tool-bubble/research-agent-tool.ts
+/workspaces/BubbleLab/packages/bubble-core/src/bubbles/workflow-bubble/pdf-ocr.workflow.ts
+修改后注意事项
+确保您已经配置了要使用的 AI 服务的 API 密钥（如 OPENAI_API_KEY 或 ANTHROPIC_API_KEY）
+重新构建项目以应用所有修改
+测试生成功能是否正常工作
+这些修改应该能解决 "Google API key is required" 的错误，并允许您使用其他 AI 模型进行代码生成。
