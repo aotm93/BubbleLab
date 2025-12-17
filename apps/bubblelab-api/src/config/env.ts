@@ -69,6 +69,7 @@ export const env = {
   NODEX_API_URL: process.env.NODEX_API_URL,
   GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  OPENAI_API_URL: process.env.OPENAI_API_URL,  // 添加这一行
   OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
   DATABASE_URL: process.env.DATABASE_URL!,
   PYTHON_PATH: process.env.PYTHON_PATH,

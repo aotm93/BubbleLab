@@ -546,6 +546,9 @@ export class AIAgentBubble extends ServiceBubble<
           apiKey,
           streaming: enableStreaming,
           maxRetries: retries,
+          configuration: {
+      baseURL: process.env.OPENAI_API_URL,  // 添加这一行
+    },
         });
       case 'google':
         return new SafeGeminiChat({
