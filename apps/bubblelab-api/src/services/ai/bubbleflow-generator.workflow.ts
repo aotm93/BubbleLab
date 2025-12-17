@@ -623,72 +623,57 @@ ${AI_AGENT_BEHAVIOR_INSTRUCTIONS}`;
       console.log('[BubbleFlowGenerator] AI agent execution completed');
       console.log('[BubbleFlowGenerator] Result success:', result.success);
       console.log('[BubbleFlowGenerator] Result error:', result.error);
-      console.log('[BubbleFlowGenerator] Result response:', result.response);
-      console.log('[BubbleFlowGenerator] Result toolCalls:', result.toolCalls?.length);
-
-      // Fallback mechanism: extract code from AI agent response if no tool was called
-      if (!currentCode && result.success && result.response) {
-        console.log('[BubbleFlowGenerator] No code from tool calls, trying to extract from response');
-        
-        // 尝试多种代码提取方式
-        let extractedCode: string | null = null;
-        
-        // 1. 尝试提取TypeScript代码块
-        const typescriptMatch = result.response.match(/```typescript\n([\s\S]*?)\n```/);
-        if (typescriptMatch && typescriptMatch[1]) {
-          extractedCode = typescriptMatch[1].trim();
-        }
-        
-        // 2. 如果没有TypeScript代码块，尝试提取JavaScript代码块
-        if (!extractedCode) {
-          const javascriptMatch = result.response.match(/```javascript\n([\s\S]*?)\n```/);
-          if (javascriptMatch && javascriptMatch[1]) {
-            extractedCode = javascriptMatch[1].trim();
-          }
-        }
-        
-        // 3. 如果没有代码块标记，尝试提取看起来像BubbleFlow类的代码
-        if (!extractedCode) {
-          const classMatch = result.response.match(/(import[\s\S]*?class[\s\S]*?from[\s\S]*?{[\s\S]*?})\n\n/);
-          if (classMatch && classMatch[1]) {
-            extractedCode = classMatch[1].trim();
-          }
-        }
-        
-        if (extractedCode) {
-          console.log('[BubbleFlowGenerator] Extracted code from response:', extractedCode);
-          
-          // Validate the extracted code
-          const validationResult = await validateAndExtract(extractedCode, this.bubbleFactory);
-          console.log('[BubbleFlowGenerator] Validation result for extracted code:', validationResult);
-          
-          if (validationResult.valid) {
-            console.log('[BubbleFlowGenerator] Extracted code is valid, using as generated code');
-            currentCode = extractedCode;
-            savedValidationResult = validationResult;
-          } else {
-            console.log('[BubbleFlowGenerator] Extracted code is invalid:', validationResult.errors);
-          }
-        }
-      }
 
       if (!result.success || !currentCode) {
         console.log('[BubbleFlowGenerator] AI agent failed');
-        
-        // 更详细的错误信息
-        const detailedError = result.error 
-          ? result.error 
-          : !currentCode 
-            ? 'No code generated (AI did not call createWorkflow tool)' 
-            : 'Unknown error';
-            
         return {
-          toolCalls: result.toolCalls || [],
+          toolCalls: [],
           generatedCode: '',
           isValid: false,
           success: false,
-          error: detailedError,
+          error: result.error || 'Failed to generate code',
           summary: '',
           inputsSchema: '',
         };
       }
+
+      // Get the generated code from currentCode (set by hooks)
+      const generatedCode = currentCode || '';
+      const isValid = savedValidationResult?.valid ?? false;
+      const validationError = savedValidationResult?.errors.join('; ') ?? '';
+
+      // Run summarize agent if validation passed
+      const { summary, inputsSchema } = isValid
+        ? await this.runSummarizeAgent(
+            generatedCode,
+            this.params.credentials,
+            this.streamingCallback
+          )
+        : { summary: '', inputsSchema: '' };
+
+      return {
+        toolCalls: result.data?.toolCalls || [],
+        generatedCode,
+        isValid,
+        success: true,
+        error: validationError,
+        summary,
+        inputsSchema,
+      };
+    } catch (error) {
+      console.error('[BubbleFlowGenerator] Error during generation:', error);
+      return {
+        toolCalls: [],
+        generatedCode: '',
+        isValid: false,
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Unknown error during generation',
+        summary: '',
+        inputsSchema: '',
+      };
+    }
+  }
+}
