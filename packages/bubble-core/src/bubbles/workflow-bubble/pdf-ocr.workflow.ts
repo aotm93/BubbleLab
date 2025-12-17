@@ -157,7 +157,7 @@ const PDFOcrWorkflowParamsSchema = z.discriminatedUnion('mode', [
       .describe('Options for PDF to images conversion'),
     aiOptions: z
       .object({
-        model: AvailableModels.default('google/gemini-2.5-flash').describe(
+        model: AvailableModels.default('openai/gemini-2.5-pro-exp-03-25').describe(
           'AI model to use for field identification'
         ),
         temperature: z

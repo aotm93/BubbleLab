@@ -85,7 +85,7 @@ const BackupModelConfigSchema = z.object({
 
 // Define model configuration
 const ModelConfigSchema = z.object({
-  model: AvailableModels.default('google/gemini-2.5-flash').describe(
+  model: AvailableModels.default('openai/gpt-5-mini').describe(
     'AI model to use (format: provider/model-name).'
   ),
   temperature: z

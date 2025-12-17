@@ -12,13 +12,13 @@ import { AvailableModel } from './ai-models.js';
 
 // Model constants for AI agent instructions
 export const RECOMMENDED_MODELS = {
-  BEST: 'google/gemini-3-pro-preview',
-  PRO: 'google/gemini-2.5-pro',
-  PRO_ALT: 'anthropic/claude-sonnet-4-5',
-  FAST: 'google/gemini-2.5-flash',
-  FAST_ALT: 'anthropic/claude-haiku-4-5',
-  LITE: 'google/gemini-2.5-flash-lite',
-  IMAGE: 'google/gemini-2.5-flash-image-preview',
+  BEST: 'openai/gpt-5-thinking',
+  PRO: 'openai/gemini-2.5-pro-exp-03-25',
+  PRO_ALT: 'openai/grok-4',
+  FAST: 'openai/gpt-5-mini',
+  FAST_ALT: 'openrouter/x-ai/grok-4.1-fast',
+  LITE: 'openai/gpt-5-mini',
+  IMAGE: 'openai/gemini-2.5-flash-image',
 } as Record<string, AvailableModel>;
 
 export const CRITICAL_INSTRUCTIONS = `CRITICAL INSTRUCTIONS:
