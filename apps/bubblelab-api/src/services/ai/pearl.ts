@@ -24,6 +24,27 @@ import {
   DEBUGGING_INSTRUCTIONS,
   AI_AGENT_BEHAVIOR_INSTRUCTIONS,
 } from '@bubblelab/shared-schemas';
+
+/**
+ * Helper used to combine system env credentials and runtime-provided credentials
+ * and filter out any empty string values so Zod validation does not require
+ * missing credential keys at construct time.
+ */
+export function buildMergedCredentials(
+  provided?: Partial<Record<CredentialType, string>>
+): Partial<Record<CredentialType, string>> {
+  const rawMerged: Partial<Record<CredentialType, string>> = {
+    [CredentialType.OPENAI_CRED]: env.OPENAI_API_KEY || '',
+    [CredentialType.ANTHROPIC_CRED]: env.ANTHROPIC_API_KEY || '',
+    [CredentialType.OPENROUTER_CRED]: env.OPENROUTER_API_KEY || '',
+    [CredentialType.GOOGLE_GEMINI_CRED]: env.GOOGLE_API_KEY || '',
+    ...(provided || {}),
+  };
+
+  return Object.fromEntries(
+    Object.entries(rawMerged).filter(([, v]) => typeof v === 'string' && v.trim() !== '')
+  ) as Partial<Record<CredentialType, string>>;
+}
 import {
   AIAgentBubble,
   type ToolHookContext,
@@ -386,13 +407,8 @@ export async function runPearl(
       };
 
       // Merge system credentials with provided credentials so agent/tools have necessary keys
-      const mergedCredentials: Partial<Record<CredentialType, string>> = {
-        [CredentialType.OPENAI_CRED]: env.OPENAI_API_KEY || '',
-        [CredentialType.ANTHROPIC_CRED]: env.ANTHROPIC_API_KEY || '',
-        [CredentialType.OPENROUTER_CRED]: env.OPENROUTER_API_KEY || '',
-        [CredentialType.GOOGLE_GEMINI_CRED]: env.GOOGLE_API_KEY || '',
-        ...(credentials || {}),
-      };
+      const mergedCredentials = buildMergedCredentials(credentials);
+
 
       // Create AI agent with hooks
       const agent = new AIAgentBubble({

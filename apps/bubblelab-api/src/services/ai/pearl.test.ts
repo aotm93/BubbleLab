@@ -1,6 +1,6 @@
 // @ts-expect-error - Bun test types
 import { describe, it, expect, beforeAll, afterAll } from 'bun:test';
-import { runPearl } from './pearl.js';
+import { runPearl, buildMergedCredentials } from './pearl.js';
 import type { AvailableModel, PearlRequest } from '@bubblelab/shared-schemas';
 import { CredentialType } from '@bubblelab/shared-schemas';
 import { env } from '../../config/env.js';
@@ -1308,5 +1308,26 @@ describe('Pearl critical test', () => {
 
     // Fail the entire test suite if we don't have enough passes across all tests
     expect(totalPasses).toBeGreaterThanOrEqual(totalRequiredPasses);
+  });
+});
+
+// ---- Additional unit tests for credential merging/filtering ----
+describe('buildMergedCredentials helper', () => {
+  it('removes empty string and undefined values from merged result', () => {
+    const merged = buildMergedCredentials({
+      [CredentialType.GOOGLE_GEMINI_CRED]: '',
+      [CredentialType.OPENAI_CRED]: 'sk-abc',
+    } as Partial<Record<CredentialType, string>>);
+
+    expect(merged[CredentialType.GOOGLE_GEMINI_CRED]).toBeUndefined();
+    expect(merged[CredentialType.OPENAI_CRED]).toBe('sk-abc');
+  });
+
+  it('preserves provided non-empty credentials', () => {
+    const merged = buildMergedCredentials({
+      [CredentialType.ANTHROPIC_CRED]: 'anthropic-1',
+    } as Partial<Record<CredentialType, string>>);
+
+    expect(merged[CredentialType.ANTHROPIC_CRED]).toBe('anthropic-1');
   });
 });
