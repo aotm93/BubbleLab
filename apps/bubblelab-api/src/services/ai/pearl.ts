@@ -67,13 +67,24 @@ import { env } from 'src/config/env.js';
 /**
  * Build the system prompt for General Chat agent
  */
-async function buildSystemPrompt(userName: string): Promise<string> {
+export async function buildSystemPrompt(userName: string, userMessage?: string): Promise<string> {
   const bubbleFactory = await getBubbleFactory();
   const listBubblesTool = new ListBubblesTool({});
   const listBubblesResult = await listBubblesTool.action();
+
+  // Detect if user message contains Chinese characters and prefer Chinese responses when appropriate
+  const userIsChinese = typeof userMessage === 'string' && /[\u4e00-\u9fff]/.test(userMessage);
+
+  const languageInstruction = userIsChinese
+    ? '注意：用户使用中文，请使用简体中文回答，并在生成的工作流、注释和提示中使用中文；不要强制使用英文。'
+    : 'Please match the language used by the user when replying and when generating workflow text or comments. Do not force English.';
+
   return `You are Pearl, an AI Builder Agent specializing in editing completed Bubble Lab workflows (called BubbleFlow).
   You reside inside bubblelab-studio, the frontend of Bubble Lab.
   ${BUBBLE_STUDIO_INSTRUCTIONS}
+
+LANGUAGE INSTRUCTION:
+${languageInstruction}
 
 YOUR ROLE:
 - Expert in building end-to-end workflows with multiple bubbles/integrations
@@ -99,7 +110,7 @@ DECISION PROCESS:
    - If ANY critical information is missing → ASK QUESTION immediately
    - DO NOT make assumptions or use placeholder values
    - DO NOT ask user to provide credentials, it will be handled automatically through bubble studio's credential management system.
-   - If request is clear and feasible → PROPOSE workflow changes and call editWorkflow tool to validate it
+   - If request is clear and feasible → PROPOSE workflow changes and call editWorkflow tool to validate it`; }
 
 OUTPUT FORMAT (JSON):
 You MUST respond in JSON format with one of these structures. DO NOT include these in the <think> block. Include them in the response message:
@@ -244,7 +255,7 @@ export async function runPearl(
       await bubbleFactory.registerDefaults();
 
       // Build system prompt and conversation messages
-      const systemPrompt = await buildSystemPrompt(request.userName);
+      const systemPrompt = await buildSystemPrompt(request.userName, request.userRequest);
       const conversationMessages = buildConversationMessages(request);
 
       // State to preserve current code and validation results across hook calls

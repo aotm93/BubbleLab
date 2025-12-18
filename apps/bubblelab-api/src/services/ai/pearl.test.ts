@@ -1331,3 +1331,18 @@ describe('buildMergedCredentials helper', () => {
     expect(merged[CredentialType.ANTHROPIC_CRED]).toBe('anthropic-1');
   });
 });
+
+// ---- Tests for system prompt language selection ----
+describe('buildSystemPrompt language selection', () => {
+  it('includes Chinese language instruction when user message contains Chinese', async () => {
+    const prompt = await buildSystemPrompt('Test User', '你好，我想创建一个工作流');
+    expect(prompt).toContain('简体中文');
+    expect(prompt).toContain('用户使用中文');
+  });
+
+  it('includes English language instruction when user message is English', async () => {
+    const prompt = await buildSystemPrompt('Test User', 'Hello, create a workflow');
+    expect(prompt).toContain('Do not force English');
+    expect(prompt).toContain('Please match the language');
+  });
+});
