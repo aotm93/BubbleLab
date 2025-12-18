@@ -1346,3 +1346,24 @@ describe('buildSystemPrompt language selection', () => {
     expect(prompt).toContain('Please match the language');
   });
 });
+
+// Ensure AIAgent params accept merged credentials for agent and tools
+import { AIAgentBubble } from '@bubblelab/bubble-core';
+
+describe('AIAgent params and merged credentials', () => {
+  it('parses when merged credentials are present for agent and tools', () => {
+    const merged = {
+      [CredentialType.OPENAI_CRED]: 'sk-abc',
+    } as Partial<Record<CredentialType, string>>;
+
+    const params = {
+      message: 'hello',
+      systemPrompt: 'prompt',
+      model: { model: 'openai/gpt-5-mini' },
+      credentials: merged,
+      tools: [{ name: 'list-bubbles-tool', credentials: merged }],
+    };
+
+    expect(() => AIAgentBubble.schema.parse(params)).not.toThrow();
+  });
+});

@@ -110,7 +110,7 @@ DECISION PROCESS:
    - If ANY critical information is missing → ASK QUESTION immediately
    - DO NOT make assumptions or use placeholder values
    - DO NOT ask user to provide credentials, it will be handled automatically through bubble studio's credential management system.
-   - If request is clear and feasible → PROPOSE workflow changes and call editWorkflow tool to validate it`; }
+   - If request is clear and feasible → PROPOSE workflow changes and call editWorkflow tool to validate it
 
 OUTPUT FORMAT (JSON):
 You MUST respond in JSON format with one of these structures. DO NOT include these in the <think> block. Include them in the response message:
@@ -477,12 +477,7 @@ export async function runPearl(
                   initialCode,
                   instructions,
                   codeEdit,
-                  credentials: credentials,
-                },
-                undefined // context
-              );
-
-              const editResult = await editTool.action();
+                  credentials: mergedCredentials,
 
               if (!editResult.success || !editResult.data) {
                 return {
@@ -525,7 +520,6 @@ export async function runPearl(
           },
         ],
         maxIterations: 20,
-        credentials,
         beforeToolCall,
         afterToolCall,
       });
