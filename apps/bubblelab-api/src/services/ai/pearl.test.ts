@@ -1,6 +1,6 @@
 // @ts-expect-error - Bun test types
 import { describe, it, expect, beforeAll, afterAll } from 'bun:test';
-import { runPearl, buildMergedCredentials } from './pearl.js';
+import { runPearl, buildMergedCredentials, buildSystemPrompt } from './pearl.js';
 import type { AvailableModel, PearlRequest } from '@bubblelab/shared-schemas';
 import { CredentialType } from '@bubblelab/shared-schemas';
 import { env } from '../../config/env.js';
