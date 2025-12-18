@@ -14,7 +14,7 @@ import { AvailableModel } from './ai-models.js';
 export const RECOMMENDED_MODELS = {
   BEST: 'openrouter/google/gemini-3-flash-preview',
   PRO: 'openai/gemini-2.5-pro-exp-03-25',
-  PRO_ALT: 'openai/grok-4',
+  PRO_ALT: 'openrouter/deepseek/deepseek-v3.2',
   FAST: 'openai/gpt-5-mini',
   FAST_ALT: 'openrouter/x-ai/grok-4.1-fast',
   LITE: 'openai/gpt-5-mini',

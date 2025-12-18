@@ -13,7 +13,7 @@ export const bubbleFlowApi = {
     flowId: number,
     data: UpdateBubbleFlowParametersRequest
   ): Promise<{ message: string }> => {
-    return api.put<{ message: string }>(`/bubble-flow/${flowId}`, data);
+    return api.put<{ message: string }>(`/api/bubble-flow/${flowId}`, data);
   },
 
   /**
@@ -24,7 +24,7 @@ export const bubbleFlowApi = {
     flowId: number,
     name: string
   ): Promise<{ message: string }> => {
-    return api.patch<{ message: string }>(`/bubble-flow/${flowId}/name`, {
+    return api.patch<{ message: string }>(`/api/bubble-flow/${flowId}/name`, {
       name,
     });
   },
@@ -33,7 +33,7 @@ export const bubbleFlowApi = {
    * Get bubble flow details including current parameters and credential assignments
    */
   getBubbleFlowDetails: async (flowId: number) => {
-    return api.get(`/bubble-flow/${flowId}`);
+    return api.get(`/api/bubble-flow/${flowId}`);
   },
 
   /**
@@ -56,7 +56,7 @@ export const bubbleFlowApi = {
     }
 
     const queryString = searchParams.toString();
-    const url = `/bubble-flow/${flowId}/executions${queryString ? `?${queryString}` : ''}`;
+    const url = `/api/bubble-flow/${flowId}/executions${queryString ? `?${queryString}` : ''}`;
 
     return api.get<ListBubbleFlowExecutionsResponse>(url);
   },
