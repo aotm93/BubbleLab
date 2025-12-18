@@ -490,10 +490,10 @@ ${AI_AGENT_BEHAVIOR_INSTRUCTIONS}`;
           ),
 
           model: {
-            model: 'openrouter/openai/gpt-5.1-codex-mini',
+            model: 'kwaipilot/kat-coder-pro:free',
             temperature: 0.3,
             backupModel: {
-              model: 'openrouter/x-ai/grok-4.1-fast',
+              model: 'openrouter/minimax/minimax-m2',
               temperature: 0.3,
             },
           },

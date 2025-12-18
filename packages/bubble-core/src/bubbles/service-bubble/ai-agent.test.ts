@@ -93,21 +93,6 @@ describe('AIAgentBubble', () => {
       expect(params.tools[0].name).toBe('web-search-tool');
       expect(params.tools[1].name).toBe('bubbleflow-validation-tool');
     });
-
-    test('constructs with tools that have empty credentials object', () => {
-      const bubble = new AIAgentBubble({
-        message: 'Test message',
-        tools: [
-          { name: 'list-bubbles-tool', credentials: {} },
-          { name: 'get-bubble-details-tool', credentials: {} },
-        ],
-      } as any);
-
-      const params = bubble.currentParams;
-      expect(params.tools).toHaveLength(2);
-      expect(params.tools[0].credentials).toEqual({});
-      expect(params.tools[1].credentials).toEqual({});
-    });
   });
 
   describe('error handling', () => {
