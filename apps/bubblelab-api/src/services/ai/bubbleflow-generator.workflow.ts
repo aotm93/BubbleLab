@@ -490,10 +490,10 @@ ${AI_AGENT_BEHAVIOR_INSTRUCTIONS}`;
           ),
 
           model: {
-            model: 'openrouter/google/gemini-3-flash-preview',
+            model: 'openrouter/openai/gpt-5.1-codex-mini',
             temperature: 0.3,
             backupModel: {
-              model: 'openai/gpt-5',
+              model: 'openrouter/x-ai/grok-4.1-fast',
               temperature: 0.3,
             },
           },

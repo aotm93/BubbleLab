@@ -12,7 +12,7 @@ import { AvailableModel } from './ai-models.js';
 
 // Model constants for AI agent instructions
 export const RECOMMENDED_MODELS = {
-  BEST: 'openrouter/google/gemini-3-flash-preview',
+  BEST: 'openrouter/openai/gpt-5.1-codex-mini',
   PRO: 'openai/gemini-2.5-pro-exp-03-25',
   PRO_ALT: 'openrouter/deepseek/deepseek-v3.2',
   FAST: 'openai/gpt-5-mini',
