@@ -17,11 +17,10 @@ const GetBubbleDetailsToolParamsSchema = z.object({
     .default(false)
     .describe('Include input parameter schema in the response'),
   credentials: z
-  .partial(z.record(z.nativeEnum(CredentialType), z.string()))
+  .record(z.string(), z.string())
   .optional()
-  .describe(
-    'Object mapping credential types to values (injected at runtime)'
-  ),
+  .describe('Object mapping credential types to values (injected at runtime)')
+,
 });
 
 // Type definitions
