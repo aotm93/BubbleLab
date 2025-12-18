@@ -59,7 +59,15 @@ setupErrorHandler(app);
 
 // Middleware
 app.use('*', logger());
-app.use('*', cors());
+app.use('*', cors({
+  origin: process.env.ALLOWED_ORIGINS?.split(',') || '*',
+  credentials: true,
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposeHeaders: ['Content-Length', 'X-Request-Id'],
+  maxAge: 86400, // 24 hours
+}));
+
 
 // Apply auth middleware to specific routes that need it
 app.use('/bubble-flow/*', authMiddleware);
