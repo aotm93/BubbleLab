@@ -385,12 +385,21 @@ export async function runPearl(
         return { messages: context.messages };
       };
 
+      // Merge system credentials with provided credentials so agent/tools have necessary keys
+      const mergedCredentials: Partial<Record<CredentialType, string>> = {
+        [CredentialType.OPENAI_CRED]: env.OPENAI_API_KEY || '',
+        [CredentialType.ANTHROPIC_CRED]: env.ANTHROPIC_API_KEY || '',
+        [CredentialType.OPENROUTER_CRED]: env.OPENROUTER_API_KEY || '',
+        [CredentialType.GOOGLE_GEMINI_CRED]: env.GOOGLE_API_KEY || '',
+        ...(credentials || {}),
+      };
+
       // Create AI agent with hooks
       const agent = new AIAgentBubble({
         name: 'Pearl - Workflow Builder',
         message: JSON.stringify(conversationMessages) || request.userRequest,
         systemPrompt,
-        credentials: credentials || {}, // 添加这一行
+        credentials: mergedCredentials,
         streaming: true,
         streamingCallback: (event) => {
           return apiStreamingCallback?.(event);
@@ -404,11 +413,11 @@ export async function runPearl(
         tools: [
           {
             name: 'list-bubbles-tool',
-            credentials: credentials || {},
+            credentials: mergedCredentials,
           },
           {
             name: 'get-bubble-details-tool',
-            credentials: credentials || {},
+            credentials: mergedCredentials,
           },
         ],
         customTools: [
