@@ -478,6 +478,11 @@ export async function runPearl(
                   instructions,
                   codeEdit,
                   credentials: mergedCredentials,
+                },
+                undefined // context
+              );
+
+              const editResult = await editTool.action();
 
               if (!editResult.success || !editResult.data) {
                 return {
