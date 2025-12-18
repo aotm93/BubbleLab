@@ -7,7 +7,7 @@ import type {
 
 export const credentialsApi = {
   getCredentials: async (): Promise<CredentialResponse[]> => {
-    return api.get<CredentialResponse[]>('/api/credentials');
+    return api.get<CredentialResponse[]>('/credentials');
   },
 
   initiateOAuth: async (
@@ -17,7 +17,7 @@ export const credentialsApi = {
     scopes?: string[]
   ): Promise<{ authUrl: string; state: string }> => {
     return api.post<{ authUrl: string; state: string }>(
-      `/api/oauth/${provider}/initiate`,
+      `/oauth/${provider}/initiate`,
       {
         credentialType,
         name,
@@ -30,7 +30,7 @@ export const credentialsApi = {
     credentialId: number,
     provider: string
   ): Promise<{ message: string }> => {
-    return api.post<{ message: string }>(`/api/oauth/${provider}/refresh`, {
+    return api.post<{ message: string }>(`/oauth/${provider}/refresh`, {
       credentialId,
     });
   },
@@ -38,17 +38,17 @@ export const credentialsApi = {
   createCredential: async (
     data: CreateCredentialRequest
   ): Promise<CredentialResponse> => {
-    return api.post<CredentialResponse>('/api/credentials', data);
+    return api.post<CredentialResponse>('/credentials', data);
   },
 
   updateCredential: async (
     id: number,
     data: UpdateCredentialRequest
   ): Promise<CredentialResponse> => {
-    return api.put<CredentialResponse>(`/api/credentials/${id}`, data);
+    return api.put<CredentialResponse>(`/credentials/${id}`, data);
   },
 
   deleteCredential: async (_apiBaseUrl: string, id: number): Promise<void> => {
-    return api.delete<void>(`/api/credentials/${id}`);
+    return api.delete<void>(`/credentials/${id}`);
   },
 };

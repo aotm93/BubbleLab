@@ -390,6 +390,7 @@ export async function runPearl(
         name: 'Pearl - Workflow Builder',
         message: JSON.stringify(conversationMessages) || request.userRequest,
         systemPrompt,
+        credentials: credentials || {}, // 添加这一行
         streaming: true,
         streamingCallback: (event) => {
           return apiStreamingCallback?.(event);
