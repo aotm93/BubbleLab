@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { ToolBubble } from '../../types/tool-bubble-class.js';
 import type { BubbleContext } from '../../types/bubble.js';
 import { BubbleFactory } from '../../bubble-factory.js';
-import type { BubbleName, CredentialType } from '@bubblelab/shared-schemas';
+import type { BubbleName } from '@bubblelab/shared-schemas';
 
 // Define the parameters schema
 const GetBubbleDetailsToolParamsSchema = z.object({
