@@ -490,7 +490,7 @@ ${AI_AGENT_BEHAVIOR_INSTRUCTIONS}`;
           ),
 
           model: {
-            model: 'kwaipilot/kat-coder-pro:free',
+            model: 'openrouter/kwaipilot/kat-coder-pro:free',
             temperature: 0.3,
             backupModel: {
               model: 'openrouter/minimax/minimax-m2',
